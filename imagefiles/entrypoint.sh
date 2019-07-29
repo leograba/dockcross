@@ -41,6 +41,9 @@ if [[ -n $BUILDER_UID ]] && [[ -n $BUILDER_GID ]]; then
        gosu $BUILDER_UID:$BUILDER_GID /work/.dockcross
     fi
 
+    # Source project specific environment variables
+    [[ -e /work/.dockcross-env ]] && source /work/.dockcross-env
+
     # Enable passwordless sudo capabilities for the user
     chown root:$BUILDER_GID $(which gosu)
     chmod +s $(which gosu); sync

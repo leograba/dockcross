@@ -321,7 +321,8 @@ DOCKCROSS_CONFIG / --config|-c <path-to-config-file>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This file is sourced, if it exists, before executing the rest of the dockcross
-script.
+script. Not to be confused with the ``.dockcross`` file for the per-project
+configuration.
 
 Default: ``~/.dockcross``
 
@@ -342,14 +343,27 @@ args if they contain spaces.
 Per-project dockcross configuration
 -----------------------------------
 
+PRE-EXECUTION SCRIPT / ``.dockcross``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 If a shell script named ``.dockcross`` is found in the current directory where
-the dockcross script is started, it is executed before the dockcross script
+the dockcross script is started, it is **executed** before the dockcross script
 ``command`` argument.  The shell script is expected to have a shebang like
 ``#!/usr/bin/env bash``.
 
 For example, commands like ``git config --global advice.detachedHead false`` can
 be added to this script.
 
+ENVIRONMENT VARIABLES / ``.dockcross-env``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a file named ``.dockcross-env`` is found in the current directory
+where the dockcross script is started, it is **sourced** before the dockcross
+script ``command`` argument.
+
+Different from the pre-execution script, it is not run with *gosu* and therefore
+only ``export MYVAR=<value>`` statements are expected in the ``.dockcross-env``
+file.
 
 How to extend Dockcross images
 ------------------------------
