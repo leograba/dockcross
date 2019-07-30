@@ -350,6 +350,12 @@ the dockcross script is started, it is executed before the dockcross script
 For example, commands like ``git config --global advice.detachedHead false`` can
 be added to this script.
 
+All environment variables set when this script runs are saved and exported in
+the shell session where the build command is run. It means you can add commands
+like ``export FOO=bar`` to the script. It also means that any environment
+variables implicitly set by any command in the script are also exported, for
+instance, when you run ``cd /work/mydir``, it will set ``OLDPWD=/work/mydir``.
+
 
 How to extend Dockcross images
 ------------------------------
