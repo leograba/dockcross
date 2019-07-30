@@ -38,7 +38,16 @@ if [[ -n $BUILDER_UID ]] && [[ -n $BUILDER_GID ]]; then
 
     # Execute project specific pre execution hook
     if [[ -e /work/.dockcross ]]; then
-       gosu $BUILDER_UID:$BUILDER_GID /work/.dockcross
+        DCENV=/work/.dockcross-env
+        gosu $BUILDER_UID:$BUILDER_GID bash -c "
+            env > $DCENV-before
+            source /work/.dockcross
+            env > $DCENV-after"
+        # Export environment variables to current session
+        comm -13 <(sort $DCENV-before) <(sort $DCENV-after) > $DCENV
+        sed -i 's/^/export /' $DCENV
+        source $DCENV
+        rm $DCENV*
     fi
 
     # Enable passwordless sudo capabilities for the user
