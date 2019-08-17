@@ -212,6 +212,10 @@ if [ -e "$SSH_DIR" -a -z "$MSYS" ]; then
     HOST_VOLUMES+="-v $SSH_DIR:/home/$(id -un)/.ssh"
 fi
 
+if [ -z "$MSYS" ]; then
+    HOST_VOLUMES+=" --mount type=tmpfs,destination=/tmp"
+fi
+
 #------------------------------------------------------------------------------
 # Now, finally, run the command in a container
 #

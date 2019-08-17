@@ -31,6 +31,9 @@ if [[ -n $BUILDER_UID ]] && [[ -n $BUILDER_GID ]]; then
     cp -r /root/* $HOME/
     chown -R $BUILDER_UID:$BUILDER_GID $HOME
 
+    export TMPDIR=/tmp
+    chown -R $BUILDER_UID:$BUILDER_GID $TMPDIR
+
     # Additional updates specific to the image
     if [[ -e /dockcross/pre_exec.sh ]]; then
         /dockcross/pre_exec.sh
@@ -38,13 +41,13 @@ if [[ -n $BUILDER_UID ]] && [[ -n $BUILDER_GID ]]; then
 
     # Execute project specific pre execution hook
     if [[ -e /work/.dockcross ]]; then
-        DCENV=/work/.dockcross-env
+        DCENV=$TMPDIR/.dockcross-env
         gosu $BUILDER_UID:$BUILDER_GID bash -c "
             env | sort > $DCENV-before
             source /work/.dockcross
             env | sort > $DCENV-after"
         # Export environment variables to current session
-        comm -13 < $DCENV-before < $DCENV-after > $DCENV
+        comm -13 $DCENV-before $DCENV-after > $DCENV
         sed -i 's/^/export /' $DCENV
         source $DCENV
         rm $DCENV*
